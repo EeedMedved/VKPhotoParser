@@ -47,14 +47,14 @@ namespace VKPhotoParser
                 return;
             }
 
-            userPath = String.Format("e:\\yum\\{0}", inputUserID);
+            userPath = String.Format("f:\\yum\\{0}", inputUserID);
 
             SaveAlbum(GetStandardAlbumUri(AlbumType.Profile, inputUserID));
-            MessageBox.Show("Фотографии профиля сохранены!");
+            //MessageBox.Show("Фотографии профиля сохранены!");
             SaveAlbum(GetStandardAlbumUri(AlbumType.Saved, inputUserID));
-            MessageBox.Show("Фотографии сохраненные сохранены!");
+            //MessageBox.Show("Фотографии сохраненные сохранены!");
             SaveAlbum(GetStandardAlbumUri(AlbumType.Wall, inputUserID));
-            MessageBox.Show("Фотографии со стены сохранены!");
+            //MessageBox.Show("Фотографии со стены сохранены!");
         }
 
 
@@ -103,7 +103,7 @@ namespace VKPhotoParser
                     str = reader.ReadToEnd();
                     JObject JResponse = JObject.Parse(str);
                     JArray array = (JArray)JResponse["response"];
-                    
+
                     if (array.Count == 0)
                     {
                         return;
@@ -158,45 +158,56 @@ namespace VKPhotoParser
                         }).ToList();
                     }
 
-                        txtBlockMsg.Text = photos.Count.ToString();
+                    if (albumUri.Contains("profile"))
+                    {
+                        txtBlockMsgProfile.Text += photos.Count.ToString();
+                    }
+                    else if (albumUri.Contains("wall"))
+                    {
+                        txtBlockMsgWall.Text += photos.Count.ToString();
+                    }
+                    else if (albumUri.Contains("saved"))
+                    {
+                        txtBoxMsgSaved.Text += photos.Count.ToString();
+                    }
 
-                    
 
-                        foreach (Photo p in photos)
+
+                    foreach (Photo p in photos)
+                    {
+                        string imgSrc = String.Empty;
+
+                        if (p.src_xxxbig != null)
                         {
-                            string imgSrc = String.Empty;
-
-                            if (p.src_xxxbig != null)
-                            {
-                                imgSrc = p.src_xxxbig;
-                            }
-                            else if (p.src_xxbig != null)
-                            {
-                                imgSrc = p.src_xxbig;
-                            }
-                            else if (p.src_xbig != null)
-                            {
-                                imgSrc = p.src_xbig;
-                            }
-                            else if (p.src_big != null)
-                            {
-                                imgSrc = p.src_big;
-                            }
-                            else if (p.src_small != null)
-                            {
-                                imgSrc = p.src_small;
-                            }
-                            else if (p.src != null)
-                            {
-                                imgSrc = p.src;
-                            }
-                            else
-                            {
-                                MessageBox.Show("Нет активных ссылок!");
-                            }
-
-                            SaveImage(imgSrc, p.pid, albumType, p.created);
+                            imgSrc = p.src_xxxbig;
                         }
+                        else if (p.src_xxbig != null)
+                        {
+                            imgSrc = p.src_xxbig;
+                        }
+                        else if (p.src_xbig != null)
+                        {
+                            imgSrc = p.src_xbig;
+                        }
+                        else if (p.src_big != null)
+                        {
+                            imgSrc = p.src_big;
+                        }
+                        else if (p.src_small != null)
+                        {
+                            imgSrc = p.src_small;
+                        }
+                        else if (p.src != null)
+                        {
+                            imgSrc = p.src;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Нет активных ссылок!");
+                        }
+
+                        SaveImage(imgSrc, p.pid, albumType, p.created);
+                    }
                 }
             }
         }

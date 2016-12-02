@@ -35,10 +35,17 @@
                     VerticalAlignment="Top"
                     HorizontalAlignment="Center" />
         </StackPanel>
-        <TextBox
-            Grid.Row="1"
-            HorizontalAlignment="Stretch"
-            x:Name="txtBlockMsg">
-        </TextBox>
+        <StackPanel Grid.Row="1">
+            <TextBox x:Name="txtBlockMsgProfile"
+                     HorizontalAlignment="Stretch"
+                     Text="Фотографии профиля ">
+            </TextBox>
+            <TextBlock x:Name="txtBlockMsgWall"
+                       HorizontalAlignment="Stretch"
+                       Text="Фотографии со стены " />
+            <TextBlock x:Name="txtBoxMsgSaved"
+                       HorizontalAlignment="Left"
+                       Text="Сохранённые фотографии " />
+        </StackPanel>
     </Grid>
 </Window>
