@@ -37,6 +37,10 @@ namespace VKPhotoParser
 
         private void btnParse_Click(object sender, RoutedEventArgs e)
         {
+            txtBlockMsgProfile.Text = "Фотографии профиля ";
+            txtBlockMsgWall.Text = "Фотографии стены ";
+            txtBoxMsgSaved.Text = "Сохранённые фотографии ";
+
             try
             {
                 inputUserID = Convert.ToInt32(txtBoxUserID.Text);
@@ -47,6 +51,11 @@ namespace VKPhotoParser
                 return;
             }
 
+
+
+            VKHelper vkHelper = new VKHelper(inputUserID);
+            List<Model.VKAlbum> vkAlbums = vkHelper.GetVKAlbums();
+
             userPath = String.Format("f:\\yum\\{0}", inputUserID);
 
             SaveAlbum(GetStandardAlbumUri(AlbumType.Profile, inputUserID));
@@ -55,6 +64,14 @@ namespace VKPhotoParser
             //MessageBox.Show("Фотографии сохраненные сохранены!");
             SaveAlbum(GetStandardAlbumUri(AlbumType.Wall, inputUserID));
             //MessageBox.Show("Фотографии со стены сохранены!");
+
+            foreach (Model.VKAlbum vkAlbum in vkAlbums)
+            {
+                SaveAlbum(vkHelper.GetUserAlbumUri(vkAlbum.Id));
+            }
+
+
+            MessageBox.Show("Все фотографии сохранены");
         }
 
 
@@ -111,6 +128,7 @@ namespace VKPhotoParser
 
                     List<Photo> photos;
 
+
                     if (albumUri.Contains("profile"))
                     {
                         albumType = "profile";
@@ -144,7 +162,7 @@ namespace VKPhotoParser
                             src_xxxbig = (string)x["src_xxxbig"]
                         }).ToList();
                     }
-                    else
+                    else if (albumUri.Contains("saved"))
                     {
                         albumType = "saved";
                         photos = array.Select(x => new Photo
@@ -155,6 +173,24 @@ namespace VKPhotoParser
                             src_small = (string)x["src_small"],
                             src_big = (string)x["src_big"],
                             src_xbig = (string)x["src_xbig"]
+                        }).ToList();
+                    }
+                    else
+                    {
+                        albumType = "userAlbum";
+                        photos = array.Select(x => new Photo
+                        {
+                            pid = (int)x["pid"],
+                            aid = (int)x["aid"],
+                            created = (int)x["created"],
+                            //owner_id = (int)x["owner_id"],
+                            //post_id = (int)x["post_id"],
+                            //src = (string)x["src"],
+                            src_small = (string)x["src_small"],
+                            src_big = (string)x["src_big"],
+                            src_xbig = (string)x["src_xbig"],
+                            src_xxbig = (string)x["src_xxbig"],
+                            src_xxxbig = (string)x["src_xxxbig"]
                         }).ToList();
                     }
 
@@ -262,6 +298,21 @@ namespace VKPhotoParser
 
         private void btnAlbums_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                inputUserID = Convert.ToInt32(txtBoxUserID.Text);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Ошибка ID пользователя. Должно быть только число!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
+
+            VKHelper vkHelper = new VKHelper(inputUserID);
+
+            lstViewAlbums.ItemsSource = vkHelper.GetVKAlbums();
         }
     }
 
@@ -271,10 +322,15 @@ namespace VKPhotoParser
         public int aid { get; set; }
         public int owner_id { get; set; }
         public String src { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String src_big { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String src_small { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String src_xbig { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String src_xxbig { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public String src_xxxbig { get; set; }
         public String text { get; set; }
         public int created { get; set; }

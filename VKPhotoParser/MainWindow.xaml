@@ -9,29 +9,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition />
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal"
                     Margin="10">
             <TextBlock Text="ID пользователя"
                        VerticalAlignment="Top"
-                       HorizontalAlignment="Left" />
+                       HorizontalAlignment="Left"
+                       Margin="5"/>
             <TextBox x:Name="txtBoxUserID"
                      MinWidth="100"
                      VerticalAlignment="Top"
                      HorizontalAlignment="Left"
-                     Margin="15 0"/>
+                     Margin="15 5"/>
             <Button x:Name="btnParse"
                     Content="Получить"
                     Click="btnParse_Click"
                     Padding="10 0"
                     VerticalAlignment="Top"
-                    HorizontalAlignment="Center" />
+                    HorizontalAlignment="Center"
+                    Margin="5"/>
             <Button x:Name="btnGetAlbums"
                     Content="Получить альбомы"
                     Click="btnAlbums_Click"
                     Padding="10 0"
+                    Margin="5"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Center" />
         </StackPanel>
@@ -46,6 +49,19 @@
             <TextBlock x:Name="txtBoxMsgSaved"
                        HorizontalAlignment="Left"
                        Text="Сохранённые фотографии " />
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <ListView x:Name="lstViewAlbums"
+                      Height="150"
+                      Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Название" Width="150" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Кол-во фото" Width="100" DisplayMemberBinding="{Binding Count}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </StackPanel>
     </Grid>
 </Window>
